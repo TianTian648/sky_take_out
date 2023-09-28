@@ -32,6 +32,10 @@
         </where>
         order by create_time desc
     </select>
+    <select id="queryById" resultType="com.sky.entity.Employee">
+        select * from employee
+        <where> id = #{id}</where>
+    </select>
     <insert id="save">
         insert into employee (id, name, username,password, phone, sex, id_number, create_time, update_time, create_user,
                               update_user)

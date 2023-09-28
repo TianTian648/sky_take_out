@@ -15,7 +15,7 @@ spring:
 
 mybatis:
   #mapper配置文件
-  mapper-locations: com.sky.mapper/EmployeeMapper.xml
+  mapper-locations: com.sky.mapper/*.xml
   type-aliases-package: com.sky.entity
   configuration:
     #开启驼峰命名

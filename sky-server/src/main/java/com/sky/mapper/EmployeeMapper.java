@@ -10,11 +10,6 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface EmployeeMapper {
 
-    /**
-     * 根据用户名查询员工
-     * @param username
-     * @return
-     */
 
     Employee getByUsername(String username);
     void save(Employee employee);
@@ -23,4 +18,6 @@ public interface EmployeeMapper {
     void startOrStop(Integer status, Long id);
 
     void update(Employee employee);
+
+    Employee queryById(Long id);
 }
