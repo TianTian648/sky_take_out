@@ -1,7 +1,9 @@
 package com.sky.controller.admin;
 
+import com.sky.annotation.AutoFill;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
+import com.sky.enumeration.OperationType;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.CategoryService;
@@ -51,6 +53,7 @@ public class CategoryController {
      */
     @PostMapping
     @ApiOperation("新增分类")
+
     public Result save(@RequestBody CategoryDTO categoryDTO) {
         categoryService.save(categoryDTO);
         return Result.success();
@@ -75,6 +78,7 @@ public class CategoryController {
      */
     @PutMapping
     @ApiOperation("修改分类")
+
     public Result update(@RequestBody CategoryDTO categoryDTO) {
        categoryService.update(categoryDTO);
         return Result.success();
