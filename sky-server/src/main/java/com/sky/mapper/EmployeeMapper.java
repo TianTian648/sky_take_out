@@ -19,4 +19,8 @@ public interface EmployeeMapper {
     Employee getByUsername(String username);
     void save(Employee employee);
     Page<Employee> pageQuery(String name);
+
+    void startOrStop(Integer status, Long id);
+
+    void update(Employee employee);
 }
