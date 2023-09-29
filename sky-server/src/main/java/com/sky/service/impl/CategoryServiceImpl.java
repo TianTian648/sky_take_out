@@ -58,4 +58,9 @@ public class CategoryServiceImpl implements CategoryService {
         BeanUtils.copyProperties(categoryDTO, category);
         categoryMapper.update(category);
     }
+
+    @Override
+    public List<Category> queryByType(Integer type) {
+        return  categoryMapper.queryByType(type);
+    }
 }

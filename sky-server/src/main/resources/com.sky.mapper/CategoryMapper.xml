@@ -32,4 +32,8 @@
         </where>
         order by create_time desc
     </select>
+    <select id="queryByType" resultType="com.sky.entity.Category">
+        select * from category
+        <where>type = #{type}</where>
+    </select>
 </mapper>

@@ -3,6 +3,7 @@ package com.sky.controller.admin;
 import com.sky.annotation.AutoFill;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
+import com.sky.entity.Category;
 import com.sky.enumeration.OperationType;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
@@ -12,6 +13,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/admin/category")
 @RestController
@@ -78,9 +81,14 @@ public class CategoryController {
      */
     @PutMapping
     @ApiOperation("修改分类")
-
     public Result update(@RequestBody CategoryDTO categoryDTO) {
        categoryService.update(categoryDTO);
         return Result.success();
+    }
+    @GetMapping("/list")
+    @ApiOperation("分类查询")
+    public Result<List<Category>> queryByType(Integer type) {
+        return Result.success(categoryService.queryByType(type));
+
     }
 }
