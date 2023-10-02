@@ -9,4 +9,13 @@
         </foreach>
 
     </insert>
+    <delete id="deleteByDishIds">
+        delete from dish_flavor where dish_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="queryById" resultType="com.sky.entity.DishFlavor">
+        select * from dish_flavor where dish_id = #{dishId}
+    </select>
 </mapper>

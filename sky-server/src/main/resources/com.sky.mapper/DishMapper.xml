@@ -4,17 +4,47 @@
 <mapper namespace="com.sky.mapper.DishMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into dish (category_id, description, image, name, price, status, create_time, update_time, create_user,
-                          update_user)
+        insert into dish (category_id, description, image, name, price, status, create_time, update_time, create_user,update_user)
         VALUES (#{categoryId}, #{description}, #{image}, #{name}, #{price}, #{status}, #{createTime}, #{updateTime},
                 #{createUser}, #{updateUser})
     </insert>
-    <select id="pageQuery" resultType="com.sky.entity.Dish">
-        select * from dish
+    <update id="update">
+        update dish
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="categoryId != null and categoryId != ''">category_id = #{categoryId},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="image != null and image != ''">image = #{image},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="price != null and price != ''">price = #{price}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteByIds">
+        delete from dish
+        <where>
+            id IN
+            <foreach collection="ids" item="id" separator="," open="(" close=")">
+               #{id}
+            </foreach>
+        </where>
+    </delete>
+    <select id="pageQuery" resultType="com.sky.vo.DishVO">
+        select dish.*, category.name as category_name  from dish  left OUTER join category on dish.category_id = category.id
         <where>
             <if test="categoryId != '' and categoryId != null">category_id = #{categoryId}</if>
             <if test="name != null and name != ''">and name = #{name}</if>
             <if test="status != null and status != ''">and status = #{status}</if>
         </where>
+        order by dish.create_time desc
+    </select>
+    <select id="queryById" resultType="com.sky.vo.DishVO">
+        select * from dish where id = #{id}
+    </select>
+    <select id="showcategory" resultType="com.sky.entity.Dish">
+        select * from dish
+        <where>
+            category_id = #{categoryId} AND status = #{status}
+         </where>
     </select>
 </mapper>

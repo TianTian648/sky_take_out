@@ -2,26 +2,24 @@ package com.sky.mapper;
 
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
-import com.sky.entity.Dish;
+import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
-import com.sky.vo.DishVO;
+import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Mapper
-public interface DishMapper {
+public interface SetmealMapper {
     @AutoFill(value = OperationType.INSERT)
-    void save(Dish dish);
+    void save(Setmeal setmeal);
 
-    Page<DishVO> pageQuery(Integer categoryId, String name, Integer status);
+    Page<SetmealVO> pageQUery(Setmeal setmeal);
 
     void deleteByIds(List<Long> ids);
 
-    DishVO queryById(Long id);
-
+    SetmealVO queryById(Long id);
     @AutoFill(value = OperationType.UPDATE)
-    void update(Dish dish);
-
-    List<Dish> showcategory(Dish dish);
+    void update(Setmeal setmeal);
 }

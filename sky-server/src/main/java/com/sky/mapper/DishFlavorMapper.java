@@ -10,4 +10,10 @@ public interface DishFlavorMapper {
 
 
     void save(List<DishFlavor> flavors);
+
+    void deleteByDishIds(List<Long> ids);
+
+    List<DishFlavor> queryById(Long dishId);
+
+
 }
