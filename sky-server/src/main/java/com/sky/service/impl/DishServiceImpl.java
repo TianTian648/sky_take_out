@@ -111,7 +111,10 @@ public class DishServiceImpl implements DishService {
         List<Long> ids = new ArrayList<>();
         ids.add(dishId);
         dishFlavorMapper.deleteByDishIds(ids);
-        dishFlavorMapper.save(flavors);
+        if (flavors != null && flavors.size() != 0){
+            dishFlavorMapper.save(flavors);
+        }
+
     }
 
     @Override
