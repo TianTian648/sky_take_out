@@ -34,6 +34,11 @@
     </select>
     <select id="queryByType" resultType="com.sky.entity.Category">
         select * from category
-        <where>type = #{type}</where>
+        <where>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+        order by sort asc,create_time desc
     </select>
 </mapper>
