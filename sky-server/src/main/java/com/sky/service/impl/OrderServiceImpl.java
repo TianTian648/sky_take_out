@@ -1,8 +1,11 @@
 package com.sky.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.*;
@@ -10,10 +13,13 @@ import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
+import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMapper orderMapper;
@@ -90,6 +97,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
     }
+
     /**
      * 订单支付
      *
@@ -108,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
 //                "苍穹外卖订单", //商品描述
 //                user.getOpenid() //微信用户的openid
 //        );
-        JSONObject jsonObject  = new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
             throw new OrderBusinessException("该订单已支付");
         }
@@ -137,5 +145,75 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+    }
+
+    @Override
+    public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+        Orders orders = Orders.builder()
+                .status(ordersPageQueryDTO.getStatus())
+                .userId(BaseContext.getCurrentId())
+                .build();
+
+        Page<Orders> page = orderMapper.historyOrders(orders);
+        List<OrderVO> list = new ArrayList<>();
+        for (Orders order : page) {
+            Long id = order.getId();
+            List<OrderDetail> orderDetail = orderDetailMapper.getByOrderId(id);
+            OrderVO orderVO = new OrderVO();
+            BeanUtils.copyProperties(order, orderVO);
+            orderVO.setOrderDetailList(orderDetail);
+            list.add(orderVO);
+        }
+        return new PageResult(page.getTotal(), list);
+    }
+
+    @Override
+    public OrderVO orderDetail(Long id) {
+        Orders orders = orderMapper.queryById(id);
+        List<OrderDetail> orderDetail = orderDetailMapper.getByOrderId(id);
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orders, orderVO);
+        orderVO.setOrderDetailList(orderDetail);
+        return orderVO;
+    }
+
+    @Override
+    public void repeOrder(Long id) {
+        List<OrderDetail> byOrderId = orderDetailMapper.getByOrderId(id);
+        List<ShoppingCart> shoppingCarts = new ArrayList<>();
+        for (OrderDetail orderDetail : byOrderId) {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            BeanUtils.copyProperties(orderDetail, shoppingCart);
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            shoppingCart.setUserId(BaseContext.getCurrentId());
+            shoppingCarts.add(shoppingCart);
+        }
+        log.info("购物车信息为:{}", shoppingCarts);
+        shoppingCartMapper.insertBatch(shoppingCarts);
+    }
+
+    @Override
+    public void cancelOrder(Long id) throws Exception {
+        Orders orders = orderMapper.queryById(id);
+        if (orders == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        Integer status = orders.getStatus();
+        Orders order = new Orders();
+        order.setId(orders.getId());
+        if (status > 2) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        } else if (status == 2) {
+            //支付状态修改为 退款
+            order.setPayStatus(Orders.REFUND);
+        }
+        // 更新订单状态、取消原因、取消时间
+        order.setStatus(Orders.CANCELLED);
+        order.setCancelReason("用户取消");
+        order.setCancelTime(LocalDateTime.now());
+        log.info("orders:{}",orders);
+        log.info("order:{}",order);
+        orderMapper.update(order);
     }
 }

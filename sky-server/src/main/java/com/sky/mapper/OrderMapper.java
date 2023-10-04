@@ -1,7 +1,9 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
 import com.sky.entity.Orders;
 import com.sky.entity.User;
+import com.sky.vo.OrderVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -38,4 +40,7 @@ public interface OrderMapper {
 
     void updateStatus(Integer orderStatus, Integer orderPaidStatus, LocalDateTime check_out_time, Long id);
 
+    Page<Orders> historyOrders(Orders orders);
+    @Select("SELECT * from orders where id = #{id}")
+    Orders queryById(Long id);
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Api("菜品管理")
+@Api(tags = "菜品管理")
 @RequestMapping("/user/dish")
 @RestController("userDishController")
 public class DishController {

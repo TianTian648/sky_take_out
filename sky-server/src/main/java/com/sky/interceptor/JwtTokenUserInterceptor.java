@@ -41,6 +41,8 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
         }
 
         //1、从请求头中获取令牌
+        log.info("请求为：{}",jwtProperties.getUserTokenName());
+        log.info("请求参数为：{}",request.getHeader(jwtProperties.getAdminTokenName()));
         String token = request.getHeader(jwtProperties.getUserTokenName());
 
         //2、校验令牌
