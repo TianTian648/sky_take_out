@@ -1,9 +1,11 @@
 package com.sky.service.impl;
 
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
@@ -120,6 +122,28 @@ public class ReportServiceImpl implements ReportService {
                 .totalOrderCount(totalOrderCount)
                 .validOrderCount(validOrderCount)
                 .orderCompletionRate(orderCompletionRate)
+                .build();
+    }
+
+    @Override
+    public SalesTop10ReportVO Top10Statistics(LocalDate begin, LocalDate end) {
+        LocalDateTime beginTime = LocalDateTime.of(begin, LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
+        //select id from orders where order_time <= end and order_time >= begin and status = 5 -> list
+        List<Long> ids = reportMapper.list(beginTime, endTime);
+        log.info("ids:{}", ids);
+        //select name, COUNT(name) AS number from orders where order_id = id  GROUP BY name ORDER BY number desc
+        List<GoodsSalesDTO> list = reportMapper.SalesTop(ids);
+        log.info("map:{}", list);
+        List<String> nameList = new ArrayList<>();
+        List<Integer>  numberList = new ArrayList<>();
+        for (GoodsSalesDTO goodsSalesDTO : list) {
+            nameList.add(goodsSalesDTO.getName());
+            numberList.add(goodsSalesDTO.getNumber());
+        }
+        return SalesTop10ReportVO.builder()
+                .nameList(nameList.toString())
+                .numberList(numberList.toString())
                 .build();
     }
 }

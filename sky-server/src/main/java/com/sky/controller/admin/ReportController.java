@@ -62,4 +62,11 @@ public class ReportController {
            return Result.success(reportService.orderStatistics(begin, end));
     }
 
+    @ApiOperation("销量前十统计")
+    @GetMapping("/top10")
+    public Result<SalesTop10ReportVO> Top10Statistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+        return Result.success(reportService.Top10Statistics(begin, end));
+    }
+
 }

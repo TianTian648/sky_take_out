@@ -26,4 +26,13 @@
             <if test="status != null">and status = #{status}</if>
         </where>
     </select>
+    <select id="SalesTop" resultType="com.sky.dto.GoodsSalesDTO">
+        select name, count(name) AS number from sky_take_out.order_detail
+        <where>
+              order_id IN <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        </where>
+        GROUP BY name ORDER BY number desc limit 10
+    </select>
 </mapper>
