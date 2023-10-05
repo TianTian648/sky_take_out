@@ -22,3 +22,7 @@ sky:
     apiV3Key: CZBK51236435wxpay435434323FFDuv3
     notifyUrl: https://www.weixin.qq.com/wxpay/pay.php
     refundNotifyUrl: https://www.weixin.qq.com/wxpay/pay.php
+  shop:
+    address: 上海市闵行区东川路500号
+  baidu:
+    ak: zgzloGntye8QBDtqbuaKX6WcvCzsiI1Z

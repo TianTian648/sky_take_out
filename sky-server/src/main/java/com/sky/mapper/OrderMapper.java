@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import com.sky.entity.User;
 import com.sky.vo.OrderVO;
@@ -43,4 +44,8 @@ public interface OrderMapper {
     Page<Orders> historyOrders(Orders orders);
     @Select("SELECT * from orders where id = #{id}")
     Orders queryById(Long id);
+
+    Page<Orders> AdminhistoryOrders(OrdersPageQueryDTO ordersPageQueryDTO);
+   @Select("SELECT COUNT(0) from orders where status = #{status}")
+    Integer countStatus(Integer status);
 }

@@ -56,4 +56,9 @@ sky:
     apiV3Key: ${sky.wechat.apiV3Key}
     notifyUrl: ${sky.wechat.notifyUrl}
     refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
+  shop:
+    address: ${sky.shop.address}
+  baidu:
+    ak: ${sky.baidu.ak}
+
 
