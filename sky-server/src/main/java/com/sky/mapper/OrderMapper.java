@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Mapper
 public interface OrderMapper {
@@ -48,4 +49,7 @@ public interface OrderMapper {
     Page<Orders> AdminhistoryOrders(OrdersPageQueryDTO ordersPageQueryDTO);
    @Select("SELECT COUNT(0) from orders where status = #{status}")
     Integer countStatus(Integer status);
+   @Select("SELECT * from orders where status = #{status} and order_time < #{time}")
+   List<Orders> queryOutOfTime(LocalDateTime time, Integer status);
+
 }
