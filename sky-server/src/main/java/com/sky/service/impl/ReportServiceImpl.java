@@ -4,6 +4,7 @@ import com.sky.entity.Orders;
 import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.TurnoverReportVO;
+import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,9 @@ public class ReportServiceImpl implements ReportService {
         //select count(amount) from orders where order_time > begin and order_time < end and status = 5
         List<LocalDate> localDateList = new ArrayList<>();
         localDateList.add(begin);
-        log.info("begin:{}",begin);
-        log.info("end:{}",end);
-        while (!begin.equals(end)){
+        log.info("begin:{}", begin);
+        log.info("end:{}", end);
+        while (!begin.equals(end)) {
             begin = begin.plusDays(1);//日期计算，获得指定日期后1天的日期
             localDateList.add(begin);
         }
@@ -54,9 +55,32 @@ public class ReportServiceImpl implements ReportService {
             turnover = turnover == null ? 0.0 : turnover;
             turnoverList.add(turnover);
         }
-         return  TurnoverReportVO.builder()
-                 .dateList(localDateList.toString())
-                 .turnoverList(turnoverList.toString())
-                 .build();
+        return TurnoverReportVO.builder()
+                .dateList(localDateList.toString())
+                .turnoverList(turnoverList.toString())
+                .build();
+    }
+
+    @Override
+    public UserReportVO userStatistics(LocalDate begin, LocalDate end) {
+        List<LocalDate> localDateList = new ArrayList<>();
+        localDateList.add(begin);
+        while (!begin.equals(end)) {
+            begin = begin.plusDays(1);
+            localDateList.add(begin);
+        }
+        List<Integer> newUserList = new ArrayList<>();
+        List<Integer> totalUserList = new ArrayList<>();
+        for (LocalDate date : localDateList) {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+            newUserList.add(reportMapper.UserStatistics(beginTime, endTime));
+            totalUserList.add(reportMapper.UserStatistics(null, endTime));
+        }
+        return UserReportVO.builder()
+                .dateList(localDateList.toString())
+                .totalUserList(totalUserList.toString())
+                .newUserList(newUserList.toString())
+                .build();
     }
 }
