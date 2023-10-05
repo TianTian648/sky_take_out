@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.sky.entity.Orders;
 import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
+import com.sky.vo.OrderReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Slf4j
@@ -81,6 +83,43 @@ public class ReportServiceImpl implements ReportService {
                 .dateList(localDateList.toString())
                 .totalUserList(totalUserList.toString())
                 .newUserList(newUserList.toString())
+                .build();
+    }
+
+    @Override
+    public OrderReportVO orderStatistics(LocalDate begin, LocalDate end) {
+        List<LocalDate> localDateList = new ArrayList<>();
+        localDateList.add(begin);
+        while (!begin.equals(end)) {
+            begin = begin.plusDays(1);
+            localDateList.add(begin);
+        }
+        List<Integer> orderCountList = new ArrayList<>();
+        List<Integer> validOrderCountList = new ArrayList<>();
+        for (LocalDate date : localDateList) {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+            validOrderCountList.add(reportMapper.OrderStatistics(beginTime, endTime, Orders.COMPLETED));
+            orderCountList.add(reportMapper.OrderStatistics(beginTime, endTime, null));
+        }
+        int totalOrderCount = 0;
+        int validOrderCount = 0;
+
+        double orderCompletionRate = 0.0;
+        for (Integer integer : validOrderCountList) {
+            validOrderCount += integer;
+        }
+        for (Integer integer : orderCountList) {
+            totalOrderCount += integer;
+        }
+        orderCompletionRate = (double) validOrderCount / (double) totalOrderCount;
+        return OrderReportVO.builder()
+                .dateList(localDateList.toString())
+                .orderCountList(orderCountList.toString())
+                .validOrderCountList(validOrderCountList.toString())
+                .totalOrderCount(totalOrderCount)
+                .validOrderCount(validOrderCount)
+                .orderCompletionRate(orderCompletionRate)
                 .build();
     }
 }
