@@ -8,6 +8,7 @@ import com.sky.vo.DishVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DishMapper {
@@ -24,4 +25,6 @@ public interface DishMapper {
     void update(Dish dish);
 
     List<Dish> showcategory(Dish dish);
+
+    Integer countByMap(Map map);
 }
