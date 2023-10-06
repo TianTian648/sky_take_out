@@ -5,7 +5,7 @@ sky:
     port: 3306
     database: sky_take_out
     username: root
-    password: xietian337
+    password: ******
   alioss:
     endpoint: oss-cn-shanghai.aliyuncs.com
     bucket-name: tiantianlearing
@@ -15,8 +15,8 @@ sky:
     password: 123456
     database: 0
   wechat:
-    appid: wx553049edf6dba58d
-    secret: 4b59d5c17bc5b89071a582a6a748a605
+    appid: ******
+    secret: ******
     mchid: 1561414331
     mchSerialNo: 4B3B3DC35414AD50B1B755BAF8DE9CC7CF407606
     apiV3Key: CZBK51236435wxpay435434323FFDuv3
